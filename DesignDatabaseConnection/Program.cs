@@ -16,6 +16,10 @@ namespace DesignDatabaseConnection
                 {
                     throw new InvalidOperationException("It's a NULL.");
                 }
+                else if (String.IsNullOrWhiteSpace(connectionString))
+                {
+                    throw new ArgumentException("It's a whitespace or empty.");
+                }
                 else
                 {
                     ConnectionString = connectionString;
@@ -33,43 +37,47 @@ namespace DesignDatabaseConnection
         public abstract void DatabaseOpen();
         public abstract void DatabaseClose();
     }
-    public class DbCommand : DbConnection
+    public class DbCommand
     {
-        public DbCommand(string connectionString) : base(connectionString)
+        public DbCommand(DbConnection dbConnection, string instruction)
         {
-            ConnectionString = connectionString;
-        }
+            try
+            {
+                if (dbConnection == null)
+                {
+                    throw new InvalidOperationException("It's a NULL.");
+                }
+                else if (String.IsNullOrWhiteSpace(instruction))
+                {
+                    throw new ArgumentException("It's a whitespace or empty.");
+                }
+                else
+                {
+                    DbConnection = dbConnection;
+                    Instruction = instruction;
+                }
+            }
+            catch (InvalidOperationException)
+            {
 
-        public override void DatabaseOpen()
-        {
-            throw new NotImplementedException();
+                throw;
+            }
         }
-        public override void DatabaseClose()
-        {
-            throw new NotImplementedException();
-        }
-        public void Run()
-        {
-            Console.WriteLine(ConnectionString);
-            Console.ReadLine();
-        } 
+        public DbConnection DbConnection { get; set; }
+        public string Instruction { get; set; }
+
         public void Execute()
         {
-            DatabaseOpen();
-            Run();
-            DatabaseClose();
-        }
-        public void ExecuteNoDb()
-        {
-            Run();
+            DbConnection.DatabaseOpen();
+            Console.WriteLine($"Instruction: {Instruction}");
+            DbConnection.DatabaseClose();
         }
     }
     internal class Program
     {
         static void Main(string[] args)
         {
-            DbCommand command = new DbCommand("instruction?");
-            command.ExecuteNoDb();
+
         }
     }
 }
