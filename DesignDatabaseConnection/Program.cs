@@ -52,7 +52,7 @@ namespace DesignDatabaseConnection
         {
             Console.WriteLine(ConnectionString);
             Console.ReadLine();
-        }
+        } 
         public void Execute()
         {
             DatabaseOpen();
